@@ -39,7 +39,7 @@ const ResetPage = (props) => {
     const isUppercase = /[A-Z]/.test(password);
     const isNumber = /\d/.test(password);
     const isSymbol = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password);
-    const projectName = process.env.REACT_APP_PROJECT_LABEL;
+    const projectName = process.env.REACT_APP_PROJECT_LABEL || 'CB App';
 
     useEffect(() => {
         checkChangePassword();

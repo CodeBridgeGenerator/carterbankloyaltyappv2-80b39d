@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { Provider, connect } from 'react-redux'; // Import connect
+import { connect } from 'react-redux'; // Import connect
 import MyRouter from './MyRouter/MyRouter';
 import store from './utils/store';
 import { AppConfigStatic } from './AppConfigStatic';
@@ -25,10 +25,15 @@ import { excludeLocations } from './utils';
 import { classNames } from 'primereact/utils';
 import PageWrapper from './MyRouter/wrappers/PageWrapper';
 
-const App = ({ isLoggedIn }) => {
+const App = ({ isLoggedIn, logout }) => {
     const location = useLocation();
     const regex = /^\/reseta\/[a-f0-9]{24}$/;
     const showSideMenuButton = true;
+
+    useEffect(() => {
+        const projectName = process.env.REACT_APP_PROJECT_LABEL || 'CB App';
+        document.title = projectName;
+    }, []);
 
     const isExcluded = excludeLocations.some((exclude) => {
         if (typeof exclude === 'string') {
@@ -39,11 +44,11 @@ const App = ({ isLoggedIn }) => {
         return false;
     });
     return (
-        <Provider store={store}>
-            <AppTopbar showSideMenuButton={showSideMenuButton} />
+        <>
+            <AppTopbar showSideMenuButton={showSideMenuButton} logout={logout} />
 
             <MainLayout>
-                {!isExcluded && (
+                {isLoggedIn && !isExcluded ? (
                     <div
                         className={classNames('flex min-h-[calc(100vh-5rem)] bg-white', {
                             'mt-20': !isExcluded || !regex.test(location.pathname)
@@ -55,8 +60,7 @@ const App = ({ isLoggedIn }) => {
                             <MyRouter isLoggedIn={isLoggedIn} />
                         </div>
                     </div>
-                )}
-                {isExcluded && (
+                ) : (
                     <div className="flex-1 ml-2" style={{ overflowX: 'auto' }}>
                         <MyRouter isLoggedIn={isLoggedIn} />
                     </div>
@@ -69,7 +73,7 @@ const App = ({ isLoggedIn }) => {
             <PageWrapper />
 
             <AppConfigStatic rippleEffect={true} inputStyle={'outlined'} layoutMode={'static'} layoutColorMode={'light'} />
-        </Provider>
+        </>
     );
 };
 
@@ -78,4 +82,8 @@ const mapState = (state) => {
     return { isLoggedIn };
 };
 
-export default connect(mapState)(App);
+const mapDispatch = (dispatch) => ({
+    logout: () => dispatch.auth.logout()
+});
+
+export default connect(mapState, mapDispatch)(App);

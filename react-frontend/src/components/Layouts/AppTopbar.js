@@ -5,6 +5,7 @@ import { classNames } from 'primereact/utils';
 import { Button } from 'primereact/button';
 import { Menu } from 'primereact/menu';
 import client from '../../services/restClient';
+import { Dialog } from 'primereact/dialog';
 import Email from '../../assets/icons/Email.js';
 import { Avatar } from 'primereact/avatar';
 import { Tag } from 'primereact/tag';
@@ -17,7 +18,7 @@ const AppTopbar = (props) => {
     const userMenuRef = useRef(null);
     const profileMenuRef = useRef(null);
     const [ticker, setTicker] = useState('');
-    const label = process.env.REACT_APP_PROJECT_LABEL;
+    const label = process.env.REACT_APP_PROJECT_LABEL || 'CB App';
     const [profiles, setProfiles] = useState([]);
     const [roleNames, setRoleNames] = useState({});
     const [userItems, setUserItems] = useState([]);
@@ -26,6 +27,7 @@ const AppTopbar = (props) => {
     const [imageUrls, setImageUrls] = useState({});
     const [isUserMenuVisible, setUserMenuVisible] = useState(false);
     const [isProfileMenuVisible, setProfileMenuVisible] = useState(false);
+    const [showLogoutDialog, setShowLogoutDialog] = useState(false);
 
     const getOrSetTabId = () => {
         let tabId = sessionStorage.getItem('browserTabId');
@@ -446,16 +448,12 @@ const AppTopbar = (props) => {
         {
             label: 'Log Out',
             icon: 'pi pi-fw pi-sign-out',
-            template: (item) => {
+            template: (item, options) => {
                 return (
-                    <ul className="p-menu-list p-reset">
-                        <li className="p-menu-list p-reset" key={item.label}>
-                            <a className="p-menuitem-link" onClick={onLogout} role="menuitem">
-                                <span className={'p-menuitem-icon pi pi-sign-out text-primary'}></span>
-                                <span className={'p-menuitem-text text-primary'}>{item.label}</span>
-                            </a>
-                        </li>
-                    </ul>
+                    <a className={classNames(options.className, 'p-menuitem-link')} onClick={() => setShowLogoutDialog(true)} role="menuitem">
+                        <span className={'p-menuitem-icon pi pi-sign-out text-primary'}></span>
+                        <span className={'p-menuitem-text text-primary'}>{item.label}</span>
+                    </a>
                 );
             }
         }
@@ -463,7 +461,8 @@ const AppTopbar = (props) => {
 
     const onLogout = async (e) => {
         try {
-            const latestLogin = await client.service('loginHistory').find({
+            setShowLogoutDialog(false);
+            const latestLogin = await client.service('loginHistories').find({
                 query: {
                     userId: props.user._id,
                     $limit: 1,
@@ -473,7 +472,7 @@ const AppTopbar = (props) => {
 
             if (latestLogin.data.length > 0) {
                 const latestRecordId = latestLogin.data[0]._id;
-                await client.service('loginHistory').patch(latestRecordId, {
+                await client.service('loginHistories').patch(latestRecordId, {
                     logoutTime: new Date()
                 });
             }
@@ -483,6 +482,15 @@ const AppTopbar = (props) => {
         } catch (error) {
             console.error('Error updating logout time or logging out:', error);
         }
+    };
+
+    const renderLogoutDialogFooter = () => {
+        return (
+            <div>
+                <Button label="Back" icon="pi pi-times" onClick={() => setShowLogoutDialog(false)} className="p-button-text" />
+                <Button label="Yes" icon="pi pi-check" onClick={onLogout} autoFocus />
+            </div>
+        );
     };
 
     return props.isLoggedIn ? (
@@ -503,7 +511,7 @@ const AppTopbar = (props) => {
                                     marginLeft: '0.5rem'
                                 }}
                             >
-                                <i className="pi pi-menu" style={{ fontSize: '1.5rem' }}></i> {label !== '' ? label : 'CB App'}
+                                <i className="pi pi-menu" style={{ fontSize: '1.5rem' }}></i> {label}
                             </h3>
                         </div>
                     </Link>
@@ -645,6 +653,21 @@ const AppTopbar = (props) => {
                 }}
                 appendTo={typeof document !== 'undefined' ? document.body : 'self'}
             />
+
+            <Dialog
+                header="Confirmation"
+                visible={showLogoutDialog}
+                style={{ width: '350px' }}
+                modal
+                footer={renderLogoutDialogFooter()}
+                onHide={() => setShowLogoutDialog(false)}
+                appendTo={typeof document !== 'undefined' ? document.body : 'self'}
+            >
+                <div className="flex align-items-center justify-content-center">
+                    <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
+                    <span>Are you sure you want to log out?</span>
+                </div>
+            </Dialog>
         </div>
     ) : null;
 };
