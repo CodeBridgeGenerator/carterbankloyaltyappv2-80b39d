@@ -128,38 +128,38 @@ const AuditsDataTable = ({
   // Update active filters when filters change
   useEffect(() => {
     const newActiveFilters = [];
-    
+
     if (globalFilter) {
       newActiveFilters.push({
-        type: 'search',
+        type: "search",
         label: `Search: "${globalFilter}"`,
-        key: 'search',
-        value: globalFilter
+        key: "search",
+        value: globalFilter,
       });
     }
-    
+
     if (selectedServices.length > 0) {
-      selectedServices.forEach(service => {
+      selectedServices.forEach((service) => {
         newActiveFilters.push({
-          type: 'service',
+          type: "service",
           label: `Service: ${service}`,
           key: `service_${service}`,
-          value: service
+          value: service,
         });
       });
     }
-    
+
     if (selectedUsers.length > 0) {
-      selectedUsers.forEach(user => {
+      selectedUsers.forEach((user) => {
         newActiveFilters.push({
-          type: 'user',
+          type: "user",
           label: `User: ${user}`,
           key: `user_${user}`,
-          value: user
+          value: user,
         });
       });
     }
-    
+
     setActiveFilters(newActiveFilters);
   }, [globalFilter, selectedServices, selectedUsers]);
 
@@ -209,14 +209,16 @@ const AuditsDataTable = ({
   // Function to remove a specific filter
   const removeFilter = (filterKey, filterType, filterValue) => {
     switch (filterType) {
-      case 'search':
+      case "search":
         setGlobalFilter("");
         break;
-      case 'service':
-        setSelectedServices(prev => prev.filter(service => service !== filterValue));
+      case "service":
+        setSelectedServices((prev) =>
+          prev.filter((service) => service !== filterValue),
+        );
         break;
-      case 'user':
-        setSelectedUsers(prev => prev.filter(user => user !== filterValue));
+      case "user":
+        setSelectedUsers((prev) => prev.filter((user) => user !== filterValue));
         break;
       default:
         break;
@@ -450,12 +452,14 @@ const AuditsDataTable = ({
             backgroundColor: "#f8f9fa",
           }}
         >
-          <div style={{ 
-            display: "flex", 
-            justifyContent: "space-between", 
-            alignItems: "center",
-            marginBottom: "0.5rem"
-          }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginBottom: "0.5rem",
+            }}
+          >
             <span style={{ fontWeight: "bold", fontSize: "0.9rem" }}>
               Active Filters:
             </span>
@@ -467,12 +471,14 @@ const AuditsDataTable = ({
               style={{ fontSize: "0.8rem", padding: "0.25rem 0.5rem" }}
             />
           </div>
-          
-          <div style={{ 
-            display: "flex", 
-            flexWrap: "wrap", 
-            gap: "0.5rem" 
-          }}>
+
+          <div
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+              gap: "0.5rem",
+            }}
+          >
             {activeFilters.map((filter) => (
               <div
                 key={filter.key}
@@ -488,7 +494,9 @@ const AuditsDataTable = ({
               >
                 <span style={{ marginRight: "0.5rem" }}>{filter.label}</span>
                 <button
-                  onClick={() => removeFilter(filter.key, filter.type, filter.value)}
+                  onClick={() =>
+                    removeFilter(filter.key, filter.type, filter.value)
+                  }
                   style={{
                     background: "none",
                     border: "none",

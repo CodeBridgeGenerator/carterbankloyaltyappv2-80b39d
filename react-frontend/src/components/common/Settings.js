@@ -52,7 +52,9 @@ const Settings = (props) => {
         if (selectedUserProfile?.preferences?.settings) {
           setSettings(selectedUserProfile.preferences.settings);
         } else {
-          console.warn("Selected user profile or preferences.settings not found.");
+          console.warn(
+            "Selected user profile or preferences.settings not found.",
+          );
           setSettings({});
         }
       } catch (error) {
@@ -81,14 +83,16 @@ const Settings = (props) => {
       const tabId = getOrSetTabId();
       const response = await props.get();
       const currentCache = response?.results;
-      const selectedUserId = localStorage.getItem(`selectedUser_${tabId}`) || currentCache?.selectedUser;
+      const selectedUserId =
+        localStorage.getItem(`selectedUser_${tabId}`) ||
+        currentCache?.selectedUser;
 
       if (!currentCache || !selectedUserId) {
         throw new Error("Cache or selected user not available");
       }
 
       const profileIndex = currentCache.profiles.findIndex(
-        (profile) => profile.profileId === selectedUserId
+        (profile) => profile.profileId === selectedUserId,
       );
 
       if (profileIndex === -1) {
@@ -108,7 +112,8 @@ const Settings = (props) => {
       props.alert({
         title: "Error",
         type: "error",
-        message: "Failed to save settings: " + (error.message || "Unknown error"),
+        message:
+          "Failed to save settings: " + (error.message || "Unknown error"),
       });
     } finally {
       setSaveLoading(false);
@@ -179,7 +184,9 @@ const Settings = (props) => {
           <AccordionTab header="Notifications">
             <div className="grid">
               <div className="col-12 p-field">
-                <p className="text-500">Notification settings will appear here in the future.</p>
+                <p className="text-500">
+                  Notification settings will appear here in the future.
+                </p>
               </div>
             </div>
           </AccordionTab>
@@ -188,10 +195,13 @@ const Settings = (props) => {
           <AccordionTab header="Permissions">
             <div className="grid">
               <div className="col-12 p-field">
-                <label className="font-bold block mb-2">Refresh Permissions</label>
+                <label className="font-bold block mb-2">
+                  Refresh Permissions
+                </label>
                 <p className="text-500 text-sm mt-1 mb-4">
-                  If your access rights were recently updated by an administrator,
-                  click the button below to apply the latest permissions immediately.
+                  If your access rights were recently updated by an
+                  administrator, click the button below to apply the latest
+                  permissions immediately.
                 </p>
                 <Button
                   label="Refresh Permissions Now"
@@ -207,51 +217,56 @@ const Settings = (props) => {
 
           {/* Dynamic Service Settings (e.g., paginator, etc.) */}
           {Object.entries(settings)
-            .filter(([service]) => !["permissions", "notifications"].includes(service))
+            .filter(
+              ([service]) =>
+                !["permissions", "notifications"].includes(service),
+            )
             .map(([service, serviceSettings]) => (
               <AccordionTab key={service} header={formatServiceName(service)}>
                 <div className="grid">
-                  {Object.entries(serviceSettings).map(([settingName, settingValue]) => (
-                    <div
-                      key={settingName}
-                      className="col-12 md:col-6 lg:col-4 p-field mb-2"
-                    >
-                      <label htmlFor={settingName}>
-                        {formatSettingName(settingName)}:
-                      </label>
-                      {settingName === "paginatorRecordsNo" ? (
-                        <Dropdown
-                          id={settingName}
-                          value={settingValue}
-                          options={paginatorOptions}
-                          onChange={(e) =>
-                            setSettings((prev) => ({
-                              ...prev,
-                              [service]: {
-                                ...prev[service],
-                                [settingName]: e.value,
-                              },
-                            }))
-                          }
-                          placeholder="Select"
-                        />
-                      ) : (
-                        <InputText
-                          id={settingName}
-                          value={settingValue || ""}
-                          onChange={(e) =>
-                            setSettings((prev) => ({
-                              ...prev,
-                              [service]: {
-                                ...prev[service],
-                                [settingName]: e.target.value,
-                              },
-                            }))
-                          }
-                        />
-                      )}
-                    </div>
-                  ))}
+                  {Object.entries(serviceSettings).map(
+                    ([settingName, settingValue]) => (
+                      <div
+                        key={settingName}
+                        className="col-12 md:col-6 lg:col-4 p-field mb-2"
+                      >
+                        <label htmlFor={settingName}>
+                          {formatSettingName(settingName)}:
+                        </label>
+                        {settingName === "paginatorRecordsNo" ? (
+                          <Dropdown
+                            id={settingName}
+                            value={settingValue}
+                            options={paginatorOptions}
+                            onChange={(e) =>
+                              setSettings((prev) => ({
+                                ...prev,
+                                [service]: {
+                                  ...prev[service],
+                                  [settingName]: e.value,
+                                },
+                              }))
+                            }
+                            placeholder="Select"
+                          />
+                        ) : (
+                          <InputText
+                            id={settingName}
+                            value={settingValue || ""}
+                            onChange={(e) =>
+                              setSettings((prev) => ({
+                                ...prev,
+                                [service]: {
+                                  ...prev[service],
+                                  [settingName]: e.target.value,
+                                },
+                              }))
+                            }
+                          />
+                        )}
+                      </div>
+                    ),
+                  )}
                 </div>
               </AccordionTab>
             ))}

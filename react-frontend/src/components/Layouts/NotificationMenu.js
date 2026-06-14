@@ -39,8 +39,8 @@ const NotificationMenu = (props) => {
 
   // Function to construct the full path with prefix
   const constructFullPath = async (originalPath) => {
-    const prefixes = ['/app', '/cbAdmin'];
-    
+    const prefixes = ["/app", "/cbAdmin"];
+
     for (const prefix of prefixes) {
       const fullPath = `${prefix}/${originalPath}`;
       // Optionally validate the path
@@ -49,7 +49,7 @@ const NotificationMenu = (props) => {
         return fullPath;
       }
     }
-    
+
     // Fallback to original path if no prefix works
     return originalPath;
   };
@@ -203,7 +203,9 @@ const NotificationMenu = (props) => {
     }
 
     // Mark the notification as read
-    await client.service("notifications").patch(notification._id, { read: true });
+    await client
+      .service("notifications")
+      .patch(notification._id, { read: true });
     setNotifications((prevNotifications) =>
       prevNotifications.map((n) =>
         n._id === notification._id ? { ...n, read: true } : n,
@@ -215,10 +217,12 @@ const NotificationMenu = (props) => {
       try {
         // Construct the full path with appropriate prefix
         const fullPath = await constructFullPath(notification.path);
-        
+
         // Log for debugging
-        console.log(`Navigating from path "${notification.path}" to "${fullPath}"`);
-        
+        console.log(
+          `Navigating from path "${notification.path}" to "${fullPath}"`,
+        );
+
         // Navigate to the constructed path
         navigate(fullPath);
       } catch (error) {

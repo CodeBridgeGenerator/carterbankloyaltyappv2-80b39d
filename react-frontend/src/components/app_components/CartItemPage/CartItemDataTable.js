@@ -1,12 +1,12 @@
-import { Column } from 'primereact/column';
-import { DataTable } from 'primereact/datatable';
-import React, { useState, useRef, useEffect} from 'react';
-import _ from 'lodash';
-import { Button } from 'primereact/button';
+import { Column } from "primereact/column";
+import { DataTable } from "primereact/datatable";
+import React, { useState, useRef, useEffect } from "react";
+import _ from "lodash";
+import { Button } from "primereact/button";
 import { useParams } from "react-router-dom";
 import moment from "moment";
 import UploadService from "../../../services/UploadService";
-import { InputText } from 'primereact/inputtext';
+import { InputText } from "primereact/inputtext";
 import { Dialog } from "primereact/dialog";
 import { MultiSelect } from "primereact/multiselect";
 import DownloadCSV from "../../../utils/DownloadCSV";
@@ -18,15 +18,35 @@ import DuplicateIcon from "../../../assets/media/Duplicate.png";
 import DeleteIcon from "../../../assets/media/Trash.png";
 import { Checkbox } from "primereact/checkbox";
 
-const CartItemDataTable = ({ items, fields, onEditRow, onRowDelete, onRowClick, searchDialog, setSearchDialog,   showUpload, setShowUpload,
-    showFilter, setShowFilter,
-    showColumns, setShowColumns, onClickSaveFilteredfields ,
-    selectedFilterFields, setSelectedFilterFields,
-    selectedHideFields, setSelectedHideFields, onClickSaveHiddenfields, loading, user,   selectedDelete,
-  setSelectedDelete, onCreateResult}) => {
-    const dt = useRef(null);
-    const urlParams = useParams();
-    const [globalFilter, setGlobalFilter] = useState('');
+const CartItemDataTable = ({
+  items,
+  fields,
+  onEditRow,
+  onRowDelete,
+  onRowClick,
+  searchDialog,
+  setSearchDialog,
+  showUpload,
+  setShowUpload,
+  showFilter,
+  setShowFilter,
+  showColumns,
+  setShowColumns,
+  onClickSaveFilteredfields,
+  selectedFilterFields,
+  setSelectedFilterFields,
+  selectedHideFields,
+  setSelectedHideFields,
+  onClickSaveHiddenfields,
+  loading,
+  user,
+  selectedDelete,
+  setSelectedDelete,
+  onCreateResult,
+}) => {
+  const dt = useRef(null);
+  const urlParams = useParams();
+  const [globalFilter, setGlobalFilter] = useState("");
   const [selectedItems, setSelectedItems] = useState([]);
   const [showDialog, setShowDialog] = useState(false);
   const [data, setData] = useState([]);
@@ -52,13 +72,31 @@ const CartItemDataTable = ({ items, fields, onEditRow, onRowDelete, onRowClick, 
     </div>
   );
 
-const pUserUsernameTemplate0_0 = (rowData, { rowIndex }) => <p >{rowData.user?.username}</p>
-const pVoucherTitleTemplate1_0 = (rowData, { rowIndex }) => <p >{rowData.voucher?.title}</p>
-const p_numberQuantityTemplate2 = (rowData, { rowIndex }) => <p >{rowData.quantity}</p>
-    const editTemplate = (rowData, { rowIndex }) => <Button onClick={() => onEditRow(rowData, rowIndex)} icon={`pi ${rowData.isEdit ? "pi-check" : "pi-pencil"}`} className={`p-button-rounded p-button-text ${rowData.isEdit ? "p-button-success" : "p-button-warning"}`} />;
-    const deleteTemplate = (rowData, { rowIndex }) => <Button onClick={() => onRowDelete(rowData._id)} icon="pi pi-times" className="p-button-rounded p-button-danger p-button-text" />;
-    
-      const checkboxTemplate = (rowData) => (
+  const pUserUsernameTemplate0_0 = (rowData, { rowIndex }) => (
+    <p>{rowData.user?.username}</p>
+  );
+  const pVoucherTitleTemplate1_0 = (rowData, { rowIndex }) => (
+    <p>{rowData.voucher?.title}</p>
+  );
+  const p_numberQuantityTemplate2 = (rowData, { rowIndex }) => (
+    <p>{rowData.quantity}</p>
+  );
+  const editTemplate = (rowData, { rowIndex }) => (
+    <Button
+      onClick={() => onEditRow(rowData, rowIndex)}
+      icon={`pi ${rowData.isEdit ? "pi-check" : "pi-pencil"}`}
+      className={`p-button-rounded p-button-text ${rowData.isEdit ? "p-button-success" : "p-button-warning"}`}
+    />
+  );
+  const deleteTemplate = (rowData, { rowIndex }) => (
+    <Button
+      onClick={() => onRowDelete(rowData._id)}
+      icon="pi pi-times"
+      className="p-button-rounded p-button-danger p-button-text"
+    />
+  );
+
+  const checkboxTemplate = (rowData) => (
     <Checkbox
       checked={selectedItems.some((item) => item._id === rowData._id)}
       onChange={(e) => {
@@ -99,7 +137,7 @@ const p_numberQuantityTemplate2 = (rowData, { rowIndex }) => <p >{rowData.quanti
       console.error("Failed to delete selected records", error);
     }
   };
-    
+
   const handleMessage = () => {
     setShowDialog(true); // Open the dialog
   };
@@ -108,10 +146,10 @@ const p_numberQuantityTemplate2 = (rowData, { rowIndex }) => <p >{rowData.quanti
     setShowDialog(false); // Close the dialog
   };
 
-    return (
-        <>
-        <DataTable 
-           value={items}
+  return (
+    <>
+      <DataTable
+        value={items}
         ref={dt}
         removableSort
         onRowClick={onRowClick}
@@ -131,20 +169,36 @@ const p_numberQuantityTemplate2 = (rowData, { rowIndex }) => <p >{rowData.quanti
         onCreateResult={onCreateResult}
         globalFilter={globalFilter}
         header={header}
-        >
-                <Column
+      >
+        <Column
           selectionMode="multiple"
           headerStyle={{ width: "3rem" }}
           body={checkboxTemplate}
         />
-<Column field="user.username" header="Username" body={pUserUsernameTemplate0_0} style={{ minWidth: "8rem" }} />
-<Column field="voucher.title" header="Title" body={pVoucherTitleTemplate1_0} style={{ minWidth: "8rem" }} />
-<Column field="quantity" header="Quantity" body={p_numberQuantityTemplate2} filter={selectedFilterFields.includes("quantity")} hidden={selectedHideFields?.includes("quantity")}  sortable  style={{ minWidth: "8rem" }} />
-            <Column header="Edit" body={editTemplate} />
-            <Column header="Delete" body={deleteTemplate} />
-            
-        </DataTable>
-
+        <Column
+          field="user.username"
+          header="Username"
+          body={pUserUsernameTemplate0_0}
+          style={{ minWidth: "8rem" }}
+        />
+        <Column
+          field="voucher.title"
+          header="Title"
+          body={pVoucherTitleTemplate1_0}
+          style={{ minWidth: "8rem" }}
+        />
+        <Column
+          field="quantity"
+          header="Quantity"
+          body={p_numberQuantityTemplate2}
+          filter={selectedFilterFields.includes("quantity")}
+          hidden={selectedHideFields?.includes("quantity")}
+          sortable
+          style={{ minWidth: "8rem" }}
+        />
+        <Column header="Edit" body={editTemplate} />
+        <Column header="Delete" body={deleteTemplate} />
+      </DataTable>
 
       {selectedItems.length > 0 ? (
         <div
@@ -320,19 +374,27 @@ const p_numberQuantityTemplate2 = (rowData, { rowIndex }) => <p >{rowData.quanti
         </div>
       ) : null}
 
-
-        <Dialog header="Upload CartItem Data" visible={showUpload} onHide={() => setShowUpload(false)}>
-        <UploadService 
-          user={user} 
-          serviceName="cartItem"            
+      <Dialog
+        header="Upload CartItem Data"
+        visible={showUpload}
+        onHide={() => setShowUpload(false)}
+      >
+        <UploadService
+          user={user}
+          serviceName="cartItem"
           onUploadComplete={() => {
             setShowUpload(false); // Close the dialog after upload
-          }}/>
+          }}
+        />
       </Dialog>
 
-      <Dialog header="Search CartItem" visible={searchDialog} onHide={() => setSearchDialog(false)}>
-      Search
-    </Dialog>
+      <Dialog
+        header="Search CartItem"
+        visible={searchDialog}
+        onHide={() => setSearchDialog(false)}
+      >
+        Search
+      </Dialog>
       <Dialog
         header="Hide Columns"
         visible={showColumns}
@@ -358,12 +420,12 @@ const p_numberQuantityTemplate2 = (rowData, { rowIndex }) => <p >{rowData.quanti
             console.log(selectedHideFields);
             onClickSaveHiddenfields(selectedHideFields);
             setSelectedHideFields(selectedHideFields);
-            setShowColumns(false)
+            setShowColumns(false);
           }}
         ></Button>
       </Dialog>
-        </>
-    );
+    </>
+  );
 };
 
 export default CartItemDataTable;
